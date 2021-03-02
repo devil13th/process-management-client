@@ -30,7 +30,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const postcssNormalize = require('postcss-normalize');
 
 const appPackageJson = require(paths.appPackageJson);
-
+const myResolve = dir => path.resolve(__dirname, dir);
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
@@ -331,6 +331,7 @@ module.exports = function (webpackEnv) {
           'scheduler/tracing': 'scheduler/tracing-profiling',
         }),
         ...(modules.webpackAliases || {}),
+        '@': myResolve('../src')// 这样配置后 @ 可以指向 src 目录
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
