@@ -2,18 +2,26 @@ import axios from 'axios';
 
 const context = "/api"
 export default {
-  queryProcessInstance:function(params){
+  queryProcessInstancePage:function(params){
     return axios({
       method: 'get',
-      url: `${context}/queryProcessInstance`,
+      url: `${context}/queryProcessInstancePage`,
       params: params
     });
   },
-  queryTask:function(params){
+  queryTaskPage:function(params){
     return axios({
       method: 'get',
-      url: `${context}/queryTask`,
+      url: `${context}/queryTaskPage`,
       params: params
     });
   },
+  queryTaskHisPage:function(params){
+    return axios({
+      method: 'get',
+      url: `${context}/queryTaskHisPage`,
+      params: params
+    });
+  },
+  
 }

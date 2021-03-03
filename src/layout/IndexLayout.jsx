@@ -11,6 +11,7 @@ import {
 
 import ProcessInstanceList from '@/components/processinstance/ProcessInstanceList'
 import TaskList from '@/components/processinstance/TaskList'
+import TaskHisList from '@/components/processinstance/TaskHisList'
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -39,8 +40,11 @@ class IndexLayout extends React.Component {
               <Menu.Item key="4">Deploy Process</Menu.Item>
             </SubMenu>
             <SubMenu key="sub2" icon={<TeamOutlined />} title="Process Instance">
-              <Menu.Item key="6"><Link to="/processInstanceList">Instance Mgmt.</Link></Menu.Item>
-              <Menu.Item key="8"><Link to="/taskList">Task Query</Link></Menu.Item>
+              <Menu.Item key="processInstanceList"><Link to="/processInstanceList">Instance Mgmt.</Link></Menu.Item>
+              <Menu.Item key="taskList"><Link to="/taskList">Task List</Link></Menu.Item>
+              <Menu.Item key="TaskHisList"><Link to="/TaskHisList">Task His List</Link></Menu.Item>
+              
+
               <Menu.Item key="9">Process Var</Menu.Item>
             </SubMenu>
 
@@ -64,6 +68,7 @@ class IndexLayout extends React.Component {
             <div className="site-layout-background" style={{ padding:'8px 24px', minHeight: 360 }}>
               <Route path='/processInstanceList' exact component={ProcessInstanceList}></Route>
               <Route path='/taskList' exact component={TaskList}></Route>
+              <Route path='/TaskHisList' exact component={TaskHisList}></Route>
               
             </div>
 

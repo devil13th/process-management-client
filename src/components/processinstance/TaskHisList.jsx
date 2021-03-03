@@ -5,7 +5,7 @@ import ProcessApi from '@/api/ProcessApi'
 import {UserSwitchOutlined,CaretRightOutlined,InfoCircleOutlined,SettingOutlined} from '@ant-design/icons';
 const { Search } = Input;
 const { TabPane } = Tabs;
-class TaskList extends React.Component {
+class TaskHisList extends React.Component {
   state = {
     tableData:[],
     tableLoading:false,
@@ -26,7 +26,7 @@ class TaskList extends React.Component {
     },
     // 排序
     sorter: {
-      field: 'task.create_time_ ',
+      field: 'taskhis.start_time_ ',
       order: 'descend',
     },
   }
@@ -110,8 +110,9 @@ class TaskList extends React.Component {
       ...this.state.queryCondition
     }
     this.setState({ tableLoading: true })
-    ProcessApi.queryTaskPage(queryCondition).then( result => {
+    ProcessApi.queryTaskHisPage(queryCondition).then( result => {
       const r = result.data;
+      console.log(r)
       this.setState({
         tableData:r.list,
         tableLoading: false,
@@ -233,7 +234,7 @@ class TaskList extends React.Component {
     return (
       <div>
         <Tabs type="card" tabBarExtraContent={operations}>
-          <TabPane tab="Current Task" key="1"></TabPane>
+          <TabPane tab="Task His" key="1"></TabPane>
         </Tabs>
 
       
@@ -260,4 +261,4 @@ class TaskList extends React.Component {
   }
 }
 
-export default TaskList
+export default TaskHisList
