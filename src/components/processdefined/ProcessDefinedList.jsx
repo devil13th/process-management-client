@@ -1,19 +1,19 @@
 import React from 'react'
-import {message,Modal,Tabs ,Input ,Table,Tooltip ,Divider ,Button} from 'antd'
+import {Modal,Tabs ,Input ,Table,Tooltip ,Divider ,Button,message} from 'antd'
 import PropTypes from 'prop-types'
 import ProcessApi from '@/api/ProcessApi'
 import {UserSwitchOutlined,CaretRightOutlined,InfoCircleOutlined,SettingOutlined} from '@ant-design/icons';
-const { TextArea,Search } = Input;
+const { Search ,TextArea} = Input;
 const { TabPane } = Tabs;
-class TaskList extends React.Component {
+class ProcessDefinedList extends React.Component {
   state = {
     tableData:[],
     tableLoading:false,
     keyWords:'',
-    processInstanceId:'',
-    taskId:'',
-    nextStepModalVisible:false,
-    processVariable:{},
+    procDefId:'',
+    startProcessModalVisible:false,
+    businessKey:'',
+    processVariable:'',
     queryCondition:{
       businessKey:'',
       assignee:'',
@@ -29,36 +29,16 @@ class TaskList extends React.Component {
     },
     // 排序
     sorter: {
-      field: 'task.create_time_ ',
+      field: 'id_',
       order: 'descend',
     },
   }
 
-  //对标签属性进行类型、必要性的限制
-  static propTypes = {
-    businessKey:PropTypes.string,
-    assignee:PropTypes.string,
-    processInstanceId:PropTypes.string
-  }
-
-  //指定默认标签属性值
-  static defaultProps = {
-    businessKey:'',
-    assignee:'',
-    processInstanceId:''
-  }
+ 
 
   componentDidMount(){
     const queryCondition = {}
-    if(this.props.businessKey){
-      queryCondition.businessKey = this.props.businessKey
-    }
-    if(this.props.assignee){
-      queryCondition.assignee = this.props.assignee
-    }
-    if(this.props.processInstanceId){
-      queryCondition.processInstanceId = this.props.processInstanceId
-    }
+    
     this.setState({queryCondition},this.queryList)
 
   }
@@ -113,8 +93,9 @@ class TaskList extends React.Component {
       ...this.state.queryCondition
     }
     this.setState({ tableLoading: true })
-    ProcessApi.queryTaskPage(queryCondition).then( result => {
+    ProcessApi.queryProcessDef(queryCondition).then( result => {
       const r = result.data;
+      console.log(r)
       this.setState({
         tableData:r.list,
         tableLoading: false,
@@ -160,20 +141,18 @@ class TaskList extends React.Component {
     
   }
 
-
-
-  openNextStepModal = (record) => {
+  openStartProcessModal = (record) => {
     this.setState({
-      taskId:record.taskId,
-      nextStepModalVisible:true
+      procDefId:record.procDefId,
+      startProcessModalVisible:true
     })
   }
 
-  closeNextStepModal = () => {
-    this.setState({taskId:'',nextStepModalVisible:false})
+  closeProcessModal = () => {
+    this.setState({processDefinitionId:'',startProcessModalVisible:false})
   }
 
-  nextStep = () => {
+  startProcess = () => {
     
 
     let processVar = {}
@@ -186,10 +165,14 @@ class TaskList extends React.Component {
       return
     }
 
-    ProcessApi.nextStep(this.state.taskId,processVar).then(r=>{
-      message.success("Task Be Completed Success")
-      this.queryList(false)
-      this.closeNextStepModal()
+    ProcessApi.startProcessByDefId({
+      businessKey:this.state.businessKey,
+      processVariable:processVar,
+      procDefId:this.state.procDefId
+    }).then(r=>{
+      message.success("Process Be Started Success")
+      // this.queryList(false)
+      this.closeProcessModal()
     })
     
   }
@@ -197,7 +180,6 @@ class TaskList extends React.Component {
   vmodel = (name,v) => {
     this.setState({[name]:v});
   }
-
 
   render() {
     console.log("render...")
@@ -207,28 +189,20 @@ class TaskList extends React.Component {
         dataIndex: "procDefId",
       },
       {
-        title: "Key",
-        dataIndex: "businessKey",
+        title: "Def Name",
+        dataIndex: "defName",
       },
       {
-        title: "PI Id",
-        dataIndex: "processInstanceId",
+        title: "Def Key",
+        dataIndex: "defKey",
       },
       {
-        title: "Task Name",
-        dataIndex: "taskName",
+        title: "Def Ver.",
+        dataIndex: "defVersion",
       },
       {
-        title: "Assignee",
-        dataIndex: "assignee",
-      },
-      {
-        title: "Start",
-        dataIndex: "taskStartTime",
-      },
-      {
-        title: "Form",
-        dataIndex: "taskFormKey",
+        title: "Deployment Id",
+        dataIndex: "deploymentId",
       },
       {
         title: "Operate",
@@ -240,24 +214,13 @@ class TaskList extends React.Component {
                 <InfoCircleOutlined />
               </a>
             </Tooltip>
-            <Divider type="vertical"></Divider>
-            <Tooltip title="Replace Assignee">
+            <Divider type="vertical"/>
+            <Tooltip title="Start Process">
               <a>
-                <UserSwitchOutlined />
+                <CaretRightOutlined onClick={()=>{this.openStartProcessModal(record)}}/>
               </a>
             </Tooltip>
-            <Divider type="vertical"></Divider>
-            <Tooltip title="Set Task Variable">
-              <a>
-              <SettingOutlined />
-              </a>
-            </Tooltip>
-            <Divider type="vertical"></Divider>
-            <Tooltip title="Next Step">
-              <a>
-                <CaretRightOutlined onClick={()=>{this.openNextStepModal(record)}} />
-              </a>
-            </Tooltip>
+            
           </div>
         ),
       },
@@ -275,10 +238,10 @@ class TaskList extends React.Component {
     return (
       <div>
         <Tabs type="card" tabBarExtraContent={operations}>
-          <TabPane tab="Current Task" key="1"></TabPane>
+          <TabPane tab="Process Defined" key="1"></TabPane>
         </Tabs>
 
-        {/* {JSON.stringify(this.state)} */}
+       {/* {JSON.stringify(this.state)} */}
 
         <Table
           onChange={this.handleTableChange}
@@ -287,38 +250,27 @@ class TaskList extends React.Component {
           pagination={this.state.pagination}
           size="small"
           rowKey={(record) => {
-            return (
-              record.processInstanceId +
-              "_" +
-              record.taskId +
-              "_" +
-              record.taskAssignee
-            );
+            return record.procDefId;
           }}
         />
-
         <Modal
-          title="Next Step"
-          visible={this.state.nextStepModalVisible}
-          onOk={this.nextStep}
-          onCancel={this.closeNextStepModal}
-          width="80%"
+          title="Start Process"
+          visible={this.state.startProcessModalVisible}
+          onOk={this.startProcess}
+          onCancel={this.closeProcessModal}
+          width='80%'
         >
+         <div style={{marginTop:'8px'}}> 
+          <Input placeholder="Business Key" onChange={ (e) => {this.vmodel('businessKey',e.target.value)}}/>
+         </div>
+         <div style={{marginTop:'8px'}}> 
+          <TextArea rows={4} onChange={ (e) => {this.vmodel('processVariable',e.target.value)}} placeholder="Process Variable (JSON) "/>
         
-          <div style={{ marginTop: "8px" }}>
-            <TextArea
-              rows={4}
-              onChange={(e) => {
-                this.vmodel("processVariable", e.target.value);
-              }}
-              placeholder="Process Variable (JSON) "
-            />
 
-            <div
-              dangerouslySetInnerHTML={{
-                __html: `Eg.<br/>{<br/>"users":["zhangsan","lisi","wangwu"],<br/>"judge":"”zhaoliu"<br/>}`,
-              }}
-            ></div>
+
+
+
+          <div dangerouslySetInnerHTML={{ __html:`Eg.<br/>{<br/>"users":["zhangsan","lisi","wangwu"],<br/>"judge":"”zhaoliu"<br/>}`}}></div>
           </div>
         </Modal>
       </div>
@@ -326,4 +278,4 @@ class TaskList extends React.Component {
   }
 }
 
-export default TaskList
+export default ProcessDefinedList

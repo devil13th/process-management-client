@@ -5,8 +5,10 @@ import {
   DeleteOutlined,
   UnorderedListOutlined,
   SettingOutlined,
+  OrderedListOutlined
 } from "@ant-design/icons";
 import TaskList from "./TaskList";
+import TaskHisList from "./TaskHisList";
 import ProcessApi from "@/api/ProcessApi";
 const { Search } = Input;
 const { TabPane } = Tabs;
@@ -17,6 +19,7 @@ class ProcessInstanceList extends React.Component {
     keyWords: "",
     processInstanceId: "",
     taskListModalVisible: false,
+    taskHisListModalVisible:false,
     pagination: {
       current: 1,
       pageSize: 10,
@@ -132,9 +135,16 @@ class ProcessInstanceList extends React.Component {
       taskListModalVisible: true,
     });
   };
+  openTaskHisListModal = (processInstanceId) => {
+    this.setState({
+      processInstanceId: processInstanceId,
+      taskHisListModalVisible: true,
+    });
+  };
   closeModal = () => {
     this.setState({
       taskListModalVisible: false,
+      taskHisListModalVisible:false,
     });
   };
 
@@ -169,7 +179,7 @@ class ProcessInstanceList extends React.Component {
         key: "operate",
         render: (text, record) => (
           <div>
-            <Tooltip title="Detail">
+            <Tooltip title="Curent Task">
               <a>
                 <UnorderedListOutlined
                   onClick={() => {
@@ -178,6 +188,17 @@ class ProcessInstanceList extends React.Component {
                 />
               </a>
             </Tooltip>
+            <Divider type="vertical"></Divider>
+            <Tooltip title="Step History">
+              <a>
+                <OrderedListOutlined
+                  onClick={() => {
+                    this.openTaskHisListModal(record.processInstanceId);
+                  }}
+                />
+              </a>
+            </Tooltip>
+            
             <Divider type="vertical"></Divider>
             <Tooltip title="Delete Process Instance">
               <a>
@@ -224,7 +245,7 @@ class ProcessInstanceList extends React.Component {
 
         <Modal
           width={"100%"}
-          title={<UnorderedListOutlined/>}
+          title={<UnorderedListOutlined />}
           visible={this.state.taskListModalVisible}
           onOk={this.closeModal}
           onCancel={this.closeModal}
@@ -233,6 +254,20 @@ class ProcessInstanceList extends React.Component {
         >
           <TaskList processInstanceId={this.state.processInstanceId}></TaskList>
         </Modal>
+
+
+        <Modal
+          width={"100%"}
+          title={<OrderedListOutlined/>}
+          visible={this.state.taskHisListModalVisible}
+          onOk={this.closeModal}
+          onCancel={this.closeModal}
+          destroyOnClose={true}
+          maskClosable={false}
+        >
+          <TaskHisList processInstanceId={this.state.processInstanceId}></TaskHisList>
+        </Modal>
+
       </div>
     );
   }

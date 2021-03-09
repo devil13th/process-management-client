@@ -8,7 +8,7 @@ import {
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-
+import ProcessDefinedList from '@/components/processdefined/ProcessDefinedList'
 import ProcessInstanceList from '@/components/processinstance/ProcessInstanceList'
 import TaskList from '@/components/processinstance/TaskList'
 import TaskHisList from '@/components/processinstance/TaskHisList'
@@ -36,7 +36,7 @@ class IndexLayout extends React.Component {
           </div>
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
             <SubMenu key="sub1" icon={<UserOutlined />} title="Process Defined">
-              <Menu.Item key="3">Process Mgmt. </Menu.Item>
+              <Menu.Item key="3"><Link to="/processDefinedList">Process Mgmt. </Link></Menu.Item>
               <Menu.Item key="4">Deploy Process</Menu.Item>
             </SubMenu>
             <SubMenu key="sub2" icon={<TeamOutlined />} title="Process Instance">
@@ -66,6 +66,8 @@ class IndexLayout extends React.Component {
           <Content style={{ margin: '16px 16px 0px' }}>
             
             <div className="site-layout-background" style={{ padding:'8px 24px', minHeight: 360 }}>
+            
+            <Route path='/processDefinedList' exact component={ProcessDefinedList}></Route>
               <Route path='/processInstanceList' exact component={ProcessInstanceList}></Route>
               <Route path='/taskList' exact component={TaskList}></Route>
               <Route path='/TaskHisList' exact component={TaskHisList}></Route>

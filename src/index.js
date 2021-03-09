@@ -4,7 +4,7 @@ import './index.css';
 import '@/assets/css/antd.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import axios from 'axios'
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
@@ -17,11 +17,3 @@ ReactDOM.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-
-axios.get('/api/queryProcessDef')
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });

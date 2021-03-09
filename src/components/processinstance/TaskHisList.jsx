@@ -183,7 +183,11 @@ class TaskHisList extends React.Component {
       },
       {
         title: "Start",
-        dataIndex: "taskStartTime",
+        dataIndex: "taskHisStartTime",
+      },
+      {
+        title: "End",
+        dataIndex: "taskHisEndTime",
       },
       {
         title: "Form",
@@ -199,24 +203,7 @@ class TaskHisList extends React.Component {
                 <InfoCircleOutlined />
               </a>
             </Tooltip>
-            <Divider type="vertical"></Divider>
-            <Tooltip title="Replace Assignee">
-              <a>
-                <UserSwitchOutlined />
-              </a>
-            </Tooltip>
-            <Divider type="vertical"></Divider>
-            <Tooltip title="Set Task Variable">
-              <a>
-              <SettingOutlined />
-              </a>
-            </Tooltip>
-            <Divider type="vertical"></Divider>
-            <Tooltip title="Next Step">
-              <a>
-                <CaretRightOutlined />
-              </a>
-            </Tooltip>
+            
           </div>
         ),
       },
@@ -250,7 +237,7 @@ class TaskHisList extends React.Component {
             return (
               record.processInstanceId +
               "_" +
-              record.taskId +
+              record.taskHisId +
               "_" +
               record.taskAssignee
             );
