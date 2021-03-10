@@ -51,6 +51,34 @@ export default {
       params: params
     });
   },
-
+  queryProcessVarByExecutionId:function(executionId){
+    return axios({
+      method: 'get',
+      url: `${context}/queryProcessVarByExecutionId`,
+      params:{executionId}
+    });
+  },
+  queryProcessVarLocalByExecutionId:function(executionId){
+    return axios({
+      method: 'get',
+      url: `${context}/queryProcessVarLocalByExecutionId`,
+      params:{executionId}
+    });
+  },
+  queryProcessVarByTaskId:function(taskId){
+    return axios({
+      method: 'get',
+      url: `${context}/queryProcessVarByTaskId`,
+      params:{taskId}
+    });
+  },
+  queryProcessVarLocalByTaskId:function(taskId){
+    return axios({
+      method: 'get',
+      url: `${context}/queryProcessVarLocalByTaskId`,
+      params:{taskId}
+    });
+  },
+ 
   
 }

@@ -2,7 +2,8 @@ import React from 'react'
 import {message,Modal,Tabs ,Input ,Table,Tooltip ,Divider ,Button} from 'antd'
 import PropTypes from 'prop-types'
 import ProcessApi from '@/api/ProcessApi'
-import {UserSwitchOutlined,CaretRightOutlined,InfoCircleOutlined,SettingOutlined} from '@ant-design/icons';
+import ProcessVariable from '../processvariable/ProcessVariable'
+import {OrderedListOutlined,UserSwitchOutlined,CaretRightOutlined,InfoCircleOutlined,SettingOutlined} from '@ant-design/icons';
 const { TextArea,Search } = Input;
 const { TabPane } = Tabs;
 class TaskList extends React.Component {
@@ -13,6 +14,7 @@ class TaskList extends React.Component {
     processInstanceId:'',
     taskId:'',
     nextStepModalVisible:false,
+    processVarModalVisible:false,
     processVariable:{},
     queryCondition:{
       businessKey:'',
@@ -197,8 +199,12 @@ class TaskList extends React.Component {
   vmodel = (name,v) => {
     this.setState({[name]:v});
   }
-
-
+  openProcessVar = (taskId) =>{
+    this.setState({processVarModalVisible:true,taskId:taskId})
+  }
+  closeProcessVarModal = () =>{
+    this.setState({processVarModalVisible:false,taskId:''})
+  }
   render() {
     console.log("render...")
     const columns = [
@@ -215,12 +221,16 @@ class TaskList extends React.Component {
         dataIndex: "processInstanceId",
       },
       {
+        title: "Task Id",
+        dataIndex: "taskId",
+      },
+      {
         title: "Task Name",
         dataIndex: "taskName",
       },
       {
         title: "Assignee",
-        dataIndex: "assignee",
+        dataIndex: "taskAssignee",
       },
       {
         title: "Start",
@@ -249,7 +259,7 @@ class TaskList extends React.Component {
             <Divider type="vertical"></Divider>
             <Tooltip title="Set Task Variable">
               <a>
-              <SettingOutlined />
+              <SettingOutlined onClick={() => {this.openProcessVar(record.taskId)}}/>
               </a>
             </Tooltip>
             <Divider type="vertical"></Divider>
@@ -299,6 +309,7 @@ class TaskList extends React.Component {
 
         <Modal
           title="Next Step"
+          style={{top:32}}
           visible={this.state.nextStepModalVisible}
           onOk={this.nextStep}
           onCancel={this.closeNextStepModal}
@@ -321,6 +332,20 @@ class TaskList extends React.Component {
             ></div>
           </div>
         </Modal>
+
+        <Modal
+          width={"100%"}
+          style={{top:32}}
+          title={<OrderedListOutlined/>}
+          visible={this.state.processVarModalVisible}
+          onOk={this.closeProcessVarModal}
+          onCancel={this.closeProcessVarModal}
+          destroyOnClose={true}
+          maskClosable={false}
+        >
+          <ProcessVariable processVarType='task' id={this.state.taskId}></ProcessVariable>
+        </Modal>
+
       </div>
     );
   }

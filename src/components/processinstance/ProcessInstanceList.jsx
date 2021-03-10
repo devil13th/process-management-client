@@ -9,7 +9,9 @@ import {
 } from "@ant-design/icons";
 import TaskList from "./TaskList";
 import TaskHisList from "./TaskHisList";
+import ProcessVariable from '../processvariable/ProcessVariable'
 import ProcessApi from "@/api/ProcessApi";
+
 const { Search } = Input;
 const { TabPane } = Tabs;
 class ProcessInstanceList extends React.Component {
@@ -20,6 +22,9 @@ class ProcessInstanceList extends React.Component {
     processInstanceId: "",
     taskListModalVisible: false,
     taskHisListModalVisible:false,
+    processVarModalVisible:false,
+    executionVar:'',
+    executionLocalVar:'',
     pagination: {
       current: 1,
       pageSize: 10,
@@ -145,8 +150,14 @@ class ProcessInstanceList extends React.Component {
     this.setState({
       taskListModalVisible: false,
       taskHisListModalVisible:false,
+      processVarModalVisible:false,
     });
   };
+
+  openProcessVar(executionId){
+
+    this.setState({processVarModalVisible:true,processInstanceId:executionId})
+  }
 
   componentDidMount() {
     this.queryList();
@@ -208,7 +219,7 @@ class ProcessInstanceList extends React.Component {
             <Divider type="vertical"></Divider>
             <Tooltip title="Set Process Global Variable">
               <a>
-                <SettingOutlined />
+                <SettingOutlined onClick={() => {this.openProcessVar(record.processInstanceId)}}/>
               </a>
             </Tooltip>
           </div>
@@ -245,6 +256,7 @@ class ProcessInstanceList extends React.Component {
 
         <Modal
           width={"100%"}
+          style={{top:32}}
           title={<UnorderedListOutlined />}
           visible={this.state.taskListModalVisible}
           onOk={this.closeModal}
@@ -258,6 +270,7 @@ class ProcessInstanceList extends React.Component {
 
         <Modal
           width={"100%"}
+          style={{top:32}}
           title={<OrderedListOutlined/>}
           visible={this.state.taskHisListModalVisible}
           onOk={this.closeModal}
@@ -267,6 +280,20 @@ class ProcessInstanceList extends React.Component {
         >
           <TaskHisList processInstanceId={this.state.processInstanceId}></TaskHisList>
         </Modal>
+
+        <Modal
+          width={"100%"}
+          title={<OrderedListOutlined/>}
+          visible={this.state.processVarModalVisible}
+          onOk={this.closeModal}
+          onCancel={this.closeModal}
+          destroyOnClose={true}
+          maskClosable={false}
+        >
+          <ProcessVariable processVarType='execution' id={this.state.processInstanceId}></ProcessVariable>
+        </Modal>
+
+        
 
       </div>
     );
