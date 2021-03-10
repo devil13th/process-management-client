@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ProcessApi from "@/api/ProcessApi";
-import {Alert,Input, InputNumber, Select, Radio, Row, Col, Button } from "antd";
+import {Divider,Alert,Input, InputNumber, Select, Radio, Row, Col, Button } from "antd";
 import {EditOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
 const { Option } = Select;
@@ -94,17 +94,30 @@ class ProcessVariable extends React.Component {
         </Input.Group>
         </div>
         {/* {JSON.stringify(this.props)}|{JSON.stringify(this.state)} */}
-        Execution Gloab Variable
-        <Alert message={this.state.executionVar} type="success" /><EditOutlined />
+        <Divider/>
+        <Row>
+            <Col span={4} style={{textAlign:'right',paddingRight:8,paddingTop:6}}><EditOutlined /> Execution Gloab Variable :</Col>
+            <Col span={20}><Alert message={this.state.executionVar ? this.state.executionVar : '{}'} type="warning" /></Col>
+        </Row>
+        <Divider/>
+        <Row>
+            <Col span={4} style={{textAlign:'right',paddingRight:8,paddingTop:6}}><EditOutlined /> Execution Local Variable :</Col>
+            <Col span={20}><Alert message={this.state.executionLocalVar ? this.state.executionLocalVar : '{}'} type="warning" /></Col>
+        </Row>
+        <Divider/>
+        <Row>
+            <Col span={4} style={{textAlign:'right',paddingRight:8,paddingTop:6}}><EditOutlined /> Task Gloab Variable :</Col>
+            <Col span={20}><Alert message={this.state.taskVar ? this.state.taskVar : '{}'} type="info" /></Col>
+        </Row>
+        <Divider/>
+        <Row>
+            <Col span={4} style={{textAlign:'right',paddingRight:8,paddingTop:6}}><EditOutlined />  Task Local Variable :</Col>
+            <Col span={20}><Alert message={this.state.taskLocalVar ? this.state.taskLocalVar : '{}'} type="info" /></Col>
+        </Row>
+        
+        
        
-        Execution Local Variable
-        <Alert message={this.state.executionLocalVar} type="success" /><EditOutlined />
-       
-        Task Gloab Variable
-        <Alert message={this.state.taskVar} type="info" /><EditOutlined />
-       
-        Task Local Variable
-        <Alert message={this.state.taskLocalVar} type="info" /> <EditOutlined />
+
        
       </div>
     );
