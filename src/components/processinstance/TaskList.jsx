@@ -20,6 +20,7 @@ class TaskList extends React.Component {
     nextStepModalVisible:false,
     processVarModalVisible:false,
     taskDetailModalVisible:false,
+    reassignModalVisible:false,
     processVariable:{},
     queryCondition:{
       businessKey:'',
@@ -78,13 +79,13 @@ class TaskList extends React.Component {
     })
   }
 
-  static getDerivedStateFromProps(props,state){
-    console.log("---xxxx---",props,state)
-    if(props.processInstanceId !== state.queryCondition.processInstanceId){
-      return {processInstanceId:props.processInstanceId}      
-    }
-    return null;
-  }
+  // static getDerivedStateFromProps(props,state){
+  //   console.log("---xxxx---",props,state)
+  //   if(props.processInstanceId !== state.queryCondition.processInstanceId){
+  //     return {processInstanceId:props.processInstanceId}      
+  //   }
+  //   return null;
+  // }
 
   queryList = (clearPage) => {
     console.log("===",this.state.pagination)
@@ -227,6 +228,28 @@ class TaskList extends React.Component {
   closeProcessVarModal = () =>{
     this.setState({processVarModalVisible:false,tid:'',processVarType:""})
   }
+  openReassignModal = (record) => {
+    this.setState({
+      taskId:record.taskId,
+      reassignModalVisible:true,
+      userId:record.taskAssignee
+    })
+  }
+  closeReassignModal = (record) => {
+    this.setState({
+      taskId:'',
+      reassignModalVisible:false
+    })
+  }
+  reAssigneeOfTask = () => {
+    ProcessApi.setAssigneeOfTask(this.state.taskId,this.state.userId).then( r=> {
+      console.log(r)
+      this.queryList(false)
+      this.closeReassignModal()
+    })
+  }
+
+
 
   
   render() {
@@ -281,7 +304,7 @@ class TaskList extends React.Component {
             <Divider type="vertical"></Divider>
             <Tooltip title="Replace Assignee">
               <a>
-                <UserSwitchOutlined />
+                <UserSwitchOutlined onClick={ () => {this.openReassignModal(record)}}/>
               </a>
             </Tooltip>
             <Divider type="vertical"></Divider>
@@ -393,6 +416,20 @@ class TaskList extends React.Component {
         >
           <TaskInfo taskId={this.state.taskId} ></TaskInfo>
         </Modal>
+
+        <Modal
+          width={"100%"}
+          style={{top:32}}
+          title={<OrderedListOutlined/>}
+          visible={this.state.reassignModalVisible}
+          onOk={this.reAssigneeOfTask}
+          onCancel={this.closeReassignModal}
+          destroyOnClose={true}
+          maskClosable={false}
+        >
+          <Input value={this.state.userId} onChange={(e) => { this.vmodel('userId', e.target.value) }}/>
+        </Modal>
+        
 
       </div>
     );

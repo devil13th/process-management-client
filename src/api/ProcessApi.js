@@ -132,6 +132,12 @@ export default {
       method: 'get',
       url: `${context}/queryTaskHisByTaskHisId/${taskHisId}`
     })
+  },
+  setAssigneeOfTask:function(taskId,userId){
+    return axios({
+      method: 'get',
+      url: `${context}/setAssigneeOfTask?taskId=${taskId}&userId=${userId}`
+    })
   }
  
   

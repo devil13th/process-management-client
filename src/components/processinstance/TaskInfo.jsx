@@ -96,11 +96,11 @@ class TaskInfo extends React.Component {
         <Divider/>
 
         <Row gutter={24}>
-          <Col span="24">Task Variable:{JSON.stringify(this.state.taskInfo.taskVar)}</Col>
+          <Col span="24">Task Variable：{JSON.stringify(this.state.taskInfo.taskVar)}</Col>
         </Row>
 
         <Row gutter={24}>
-          <Col span="24">Execution Variable:{JSON.stringify(this.state.taskInfo.executionVar)}</Col>
+          <Col span="24">Execution Variable：{JSON.stringify(this.state.taskInfo.executionVar)}</Col>
         </Row>
 
         <Row gutter={24}>

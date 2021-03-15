@@ -202,7 +202,7 @@ class TaskHisList extends React.Component {
       },
       {
         title: "Assignee",
-        dataIndex: "assignee",
+        dataIndex: "taskAssignee",
       },
       {
         title: "Start",
