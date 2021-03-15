@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs, Input, Table, Tooltip, Divider, Modal, Button } from "antd";
+import { Tabs, Input, Table, Tooltip, Divider, Modal, Button,Popconfirm ,message} from "antd";
 import {
   InfoCircleOutlined,
   DeleteOutlined,
@@ -163,6 +163,17 @@ class ProcessInstanceList extends React.Component {
     this.queryList();
   }
 
+  deleteProcessInstance = (record) =>{
+    ProcessApi.deleteProcessInstance(record.processInstanceId).then( r => {
+      if(r.data === 'SUCCESS'){
+        message.success("Process Instance Be Deleted successfully")
+        this.queryList(false)
+      }else{
+        message.error("Process Instance Deleted Failure")
+      }
+    })
+  }
+
   render() {
     const columns = [
       {
@@ -211,17 +222,34 @@ class ProcessInstanceList extends React.Component {
             </Tooltip>
             
             <Divider type="vertical"></Divider>
-            <Tooltip title="Delete Process Instance">
+
+
+            <Popconfirm
+              placement="left"
+              title="Are you sure to delete this process instance?"
+              onConfirm={() => {
+                this.deleteProcessInstance(record);
+              }}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Tooltip title="Delete Process Instance">
               <a>
                 <DeleteOutlined />
               </a>
             </Tooltip>
+            </Popconfirm>
+
+
+
+            
             <Divider type="vertical"></Divider>
             <Tooltip title="Set Process Global Variable">
               <a>
                 <SettingOutlined onClick={() => {this.openProcessVar(record.processInstanceId)}}/>
               </a>
             </Tooltip>
+            
           </div>
         ),
       },

@@ -13,6 +13,8 @@ class TaskList extends React.Component {
     keyWords:'',
     processInstanceId:'',
     taskId:'',
+    tid:'',
+    processVarType:'',
     nextStepModalVisible:false,
     processVarModalVisible:false,
     processVariable:{},
@@ -199,11 +201,14 @@ class TaskList extends React.Component {
   vmodel = (name,v) => {
     this.setState({[name]:v});
   }
-  openProcessVar = (taskId) =>{
-    this.setState({processVarModalVisible:true,taskId:taskId})
+  openTaskVar = (taskId) =>{
+    this.setState({processVarModalVisible:true,tid:taskId,processVarType:"task"})
+  }
+  openExecutionVar = (executionId) =>{
+    this.setState({processVarModalVisible:true,tid:executionId,processVarType:"execution"})
   }
   closeProcessVarModal = () =>{
-    this.setState({processVarModalVisible:false,taskId:''})
+    this.setState({processVarModalVisible:false,tid:'',processVarType:""})
   }
   render() {
     console.log("render...")
@@ -219,6 +224,10 @@ class TaskList extends React.Component {
       {
         title: "PI Id",
         dataIndex: "processInstanceId",
+      },
+      {
+        title: "Exec Id",
+        dataIndex: "executionId",
       },
       {
         title: "Task Id",
@@ -259,7 +268,13 @@ class TaskList extends React.Component {
             <Divider type="vertical"></Divider>
             <Tooltip title="Set Task Variable">
               <a>
-              <SettingOutlined onClick={() => {this.openProcessVar(record.taskId)}}/>
+              <SettingOutlined onClick={() => {this.openTaskVar(record.taskId)}}/>
+              </a>
+            </Tooltip>
+            <Divider type="vertical"></Divider>
+            <Tooltip title="Set Execution Variable">
+              <a>
+              <SettingOutlined onClick={() => {this.openExecutionVar(record.executionId)}}/>
               </a>
             </Tooltip>
             <Divider type="vertical"></Divider>
@@ -343,7 +358,7 @@ class TaskList extends React.Component {
           destroyOnClose={true}
           maskClosable={false}
         >
-          <ProcessVariable processVarType='task' id={this.state.taskId}></ProcessVariable>
+          <ProcessVariable processVarType={this.state.processVarType} id={this.state.tid}></ProcessVariable>
         </Modal>
 
       </div>

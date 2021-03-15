@@ -1,10 +1,10 @@
 import React from 'react'
-import { Upload, Modal, Tabs, Input, Table, Tooltip, Divider, Button, message } from 'antd'
+import { Popconfirm,Upload, Modal, Tabs, Input, Table, Tooltip, Divider, Button, message } from 'antd'
 
 
 import PropTypes from 'prop-types'
 import ProcessApi from '@/api/ProcessApi'
-import { UserSwitchOutlined, CaretRightOutlined, InfoCircleOutlined, SettingOutlined, InboxOutlined } from '@ant-design/icons';
+import { UserSwitchOutlined, CaretRightOutlined, InfoCircleOutlined, SettingOutlined, InboxOutlined,DeleteOutlined } from '@ant-design/icons';
 const { Search, TextArea } = Input;
 const { TabPane } = Tabs;
 const { Dragger } = Upload;
@@ -185,6 +185,17 @@ class ProcessDefinedList extends React.Component {
     this.setState({ [name]: v });
   }
 
+  deleteDeploy = (record) => {
+    ProcessApi.deleteDeploy(record.deploymentId).then(r => {
+      if(r === 'SUCCESS'){
+        message.success("Process Defined Be Deleted successfully")
+        this.queryList(false)
+      }else{
+        message.error("Process Defined Deleted Failure")
+      }
+    })
+  }
+
   render() {
     console.log("render...")
 
@@ -215,18 +226,37 @@ class ProcessDefinedList extends React.Component {
         key: "operate",
         render: (text, record) => (
           <div>
-            <Tooltip title="Detail">
+            <Tooltip title="Detail" placement="left">
               <a>
                 <InfoCircleOutlined />
               </a>
             </Tooltip>
             <Divider type="vertical" />
-            <Tooltip title="Start Process">
+            <Tooltip title="Start Process"  placement="left">
               <a>
-                <CaretRightOutlined onClick={() => { this.openStartProcessModal(record) }} />
+                <CaretRightOutlined
+                  onClick={() => {
+                    this.openStartProcessModal(record);
+                  }}
+                />
               </a>
             </Tooltip>
-
+            <Divider type="vertical" />          
+            <Popconfirm
+              placement="left"
+              title="Are you sure to delete this process defined?"
+              onConfirm={() => {
+                this.deleteDeploy(record);
+              }}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Tooltip title="Delete Process Defined" placement="left">
+                <a>
+                <DeleteOutlined />
+                </a>
+              </Tooltip>
+            </Popconfirm>
           </div>
         ),
       },
@@ -248,13 +278,15 @@ class ProcessDefinedList extends React.Component {
       name: 'file',
       multiple: true,
       action: '/api/deploy',
-      onChange(info) {
+      onChange : (info) => {
         const { status } = info.file;
         if (status !== 'uploading') {
           console.log(info.file, info.fileList);
         }
         if (status === 'done') {
           message.success(`${info.file.name} file uploaded successfully.`);
+          this.queryList(false);
+          
         } else if (status === 'error') {
           message.error(`${info.file.name} file upload failed.`);
         }

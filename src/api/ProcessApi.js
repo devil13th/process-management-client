@@ -16,6 +16,12 @@ export default {
       data: data
     });
   },
+  deleteDeploy:function(deployId){
+    return axios({
+      method: 'delete',
+      url: `${context}/deleteDeploy/${deployId}`
+    });
+  },
   nextStep:function(taskId,processVariable){
     return axios({
       method: 'post',
@@ -35,6 +41,13 @@ export default {
       method: 'get',
       url: `${context}/queryProcessInstancePage`,
       params: params
+    });
+  },
+  deleteProcessInstance:function(processInstanceId){
+    return axios({
+      method: 'get',
+      url: `${context}/cancelProcessInstance`,
+      params: {processInstanceId}
     });
   },
   queryTaskPage:function(params){
@@ -79,6 +92,35 @@ export default {
       params:{taskId}
     });
   },
+
+  setProcessVarGlobalByExecutionId:function(data){
+    return axios({
+      method: 'post',
+      url: `${context}/setProcessVarGlobalByExecutionId`,
+      data
+    });
+  },
+  setProcessVarLocalByExecutionId:function(data){
+    return axios({
+      method: 'post',
+      url: `${context}/setProcessVarLocalByExecutionId`,
+      data
+    });
+  },
+  setProcessVarGlobalByTaskId:function(data){
+    return axios({
+      method: 'post',
+      url: `${context}/setProcessVarGlobalByTaskId`,
+      data
+    });
+  },
+  setProcessVarLocalByTaskId:function(data){
+    return axios({
+      method: 'post',
+      url: `${context}/setProcessVarLocalByTaskId`,
+      data
+    });
+  }
  
   
 }

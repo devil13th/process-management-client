@@ -37,26 +37,17 @@ class IndexLayout extends React.Component {
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
             <SubMenu key="sub1" icon={<UserOutlined />} title="Process Defined">
               <Menu.Item key="3"><Link to="/processDefinedList">Process Mgmt. </Link></Menu.Item>
-              <Menu.Item key="4">Deploy Process</Menu.Item>
+             
             </SubMenu>
             <SubMenu key="sub2" icon={<TeamOutlined />} title="Process Instance">
               <Menu.Item key="processInstanceList"><Link to="/processInstanceList">Instance Mgmt.</Link></Menu.Item>
               <Menu.Item key="taskList"><Link to="/taskList">Task List</Link></Menu.Item>
               <Menu.Item key="TaskHisList"><Link to="/TaskHisList">Task His List</Link></Menu.Item>
-              
-
               <Menu.Item key="9">Process Var</Menu.Item>
             </SubMenu>
 
-            <Menu.Item key="1" icon={<PieChartOutlined />}>
-              dd
-            </Menu.Item>
-            <Menu.Item key="2" icon={<DesktopOutlined />}>
-              Option 2
-            </Menu.Item>
-           
-           
-            <Menu.Item key="9" icon={<FileOutlined />}>
+    
+            <Menu.Item key="xx" icon={<FileOutlined />}>
               Files
             </Menu.Item>
           </Menu>
