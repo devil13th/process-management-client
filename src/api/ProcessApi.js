@@ -120,6 +120,18 @@ export default {
       url: `${context}/setProcessVarLocalByTaskId`,
       data
     });
+  },
+  queryTaskByTaskId:function(taskId){
+    return axios({
+      method: 'get',
+      url: `${context}/queryTaskByTaskId/${taskId}`
+    })
+  }, 
+  queryTaskHisByTaskHisId:function(taskHisId){
+    return axios({
+      method: 'get',
+      url: `${context}/queryTaskHisByTaskHisId/${taskHisId}`
+    })
   }
  
   

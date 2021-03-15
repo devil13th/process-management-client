@@ -1,8 +1,9 @@
 import React from 'react'
-import {Tabs ,Input ,Table,Tooltip ,Divider ,Button} from 'antd'
+import {Tabs ,Input ,Table,Tooltip ,Divider ,Button,Modal} from 'antd'
 import PropTypes from 'prop-types'
 import ProcessApi from '@/api/ProcessApi'
-import {UserSwitchOutlined,CaretRightOutlined,InfoCircleOutlined,SettingOutlined} from '@ant-design/icons';
+import {UserSwitchOutlined,CaretRightOutlined,InfoCircleOutlined,SettingOutlined,OrderedListOutlined} from '@ant-design/icons';
+import TaskInfo from './TaskInfo'
 const { Search } = Input;
 const { TabPane } = Tabs;
 class TaskHisList extends React.Component {
@@ -11,6 +12,8 @@ class TaskHisList extends React.Component {
     tableLoading:false,
     keyWords:'',
     processInstanceId:'',
+    taskDetailModalVisible:false,
+    taskHisId:'',
     queryCondition:{
       businessKey:'',
       assignee:'',
@@ -158,6 +161,20 @@ class TaskHisList extends React.Component {
     
   }
 
+
+  openTaskDetailModal = (record) => {
+    this.setState({
+      taskHisId:record.taskHisId,
+      taskDetailModalVisible:true
+    })
+  }
+  closeTaskDetailModal = () => {
+    this.setState({
+      taskHisId:"",
+      taskDetailModalVisible:false
+    })
+  }
+
   render() {
     console.log("render...")
     const columns = [
@@ -173,6 +190,12 @@ class TaskHisList extends React.Component {
         title: "PI Id",
         dataIndex: "processInstanceId",
       },
+      {
+        title: "Task His Id",
+        dataIndex: "taskHisId",
+      },
+
+      
       {
         title: "Task Name",
         dataIndex: "taskName",
@@ -199,8 +222,8 @@ class TaskHisList extends React.Component {
         render: (text, record) => (
           <div>
             <Tooltip title="Detail">
-              <a>
-                <InfoCircleOutlined />
+              <a >
+                <InfoCircleOutlined onClick={ () => this.openTaskDetailModal(record)}/>
               </a>
             </Tooltip>
             
@@ -243,6 +266,20 @@ class TaskHisList extends React.Component {
             );
           }}
         />
+
+
+        <Modal
+          width={"100%"}
+          style={{top:32}}
+          title={<OrderedListOutlined/>}
+          visible={this.state.taskDetailModalVisible}
+          onOk={this.closeTaskDetailModal}
+          onCancel={this.closeTaskDetailModal}
+          destroyOnClose={true}
+          maskClosable={false}
+        >
+          <TaskInfo taskHisId={this.state.taskHisId} ></TaskInfo>
+        </Modal>
       </div>
     );
   }

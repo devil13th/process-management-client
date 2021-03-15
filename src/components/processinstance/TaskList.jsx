@@ -3,6 +3,7 @@ import {message,Modal,Tabs ,Input ,Table,Tooltip ,Divider ,Button} from 'antd'
 import PropTypes from 'prop-types'
 import ProcessApi from '@/api/ProcessApi'
 import ProcessVariable from '../processvariable/ProcessVariable'
+import TaskInfo from './TaskInfo'
 import {OrderedListOutlined,UserSwitchOutlined,CaretRightOutlined,InfoCircleOutlined,SettingOutlined} from '@ant-design/icons';
 const { TextArea,Search } = Input;
 const { TabPane } = Tabs;
@@ -13,10 +14,12 @@ class TaskList extends React.Component {
     keyWords:'',
     processInstanceId:'',
     taskId:'',
+    taskHisId:'',
     tid:'',
     processVarType:'',
     nextStepModalVisible:false,
     processVarModalVisible:false,
+    taskDetailModalVisible:false,
     processVariable:{},
     queryCondition:{
       businessKey:'',
@@ -177,6 +180,20 @@ class TaskList extends React.Component {
     this.setState({taskId:'',nextStepModalVisible:false})
   }
 
+
+  openTaskDetailModal = (record) => {
+    this.setState({
+      taskId:record.taskId,
+      taskDetailModalVisible:true
+    })
+  }
+  closeTaskDetailModal = () => {
+    this.setState({
+      taskId:"",
+      taskDetailModalVisible:false
+    })
+  }
+
   nextStep = () => {
     
 
@@ -210,6 +227,8 @@ class TaskList extends React.Component {
   closeProcessVarModal = () =>{
     this.setState({processVarModalVisible:false,tid:'',processVarType:""})
   }
+
+  
   render() {
     console.log("render...")
     const columns = [
@@ -256,7 +275,7 @@ class TaskList extends React.Component {
           <div>
             <Tooltip title="Detail">
               <a>
-                <InfoCircleOutlined />
+                <InfoCircleOutlined onClick={() => {this.openTaskDetailModal(record)}}/>
               </a>
             </Tooltip>
             <Divider type="vertical"></Divider>
@@ -359,6 +378,20 @@ class TaskList extends React.Component {
           maskClosable={false}
         >
           <ProcessVariable processVarType={this.state.processVarType} id={this.state.tid}></ProcessVariable>
+        </Modal>
+
+
+        <Modal
+          width={"100%"}
+          style={{top:32}}
+          title={<OrderedListOutlined/>}
+          visible={this.state.taskDetailModalVisible}
+          onOk={this.closeTaskDetailModal}
+          onCancel={this.closeTaskDetailModal}
+          destroyOnClose={true}
+          maskClosable={false}
+        >
+          <TaskInfo taskId={this.state.taskId} ></TaskInfo>
         </Modal>
 
       </div>

@@ -187,7 +187,7 @@ class ProcessDefinedList extends React.Component {
 
   deleteDeploy = (record) => {
     ProcessApi.deleteDeploy(record.deploymentId).then(r => {
-      if(r === 'SUCCESS'){
+      if(r.data === 'SUCCESS'){
         message.success("Process Defined Be Deleted successfully")
         this.queryList(false)
       }else{
@@ -195,7 +195,7 @@ class ProcessDefinedList extends React.Component {
       }
     })
   }
-
+  
   render() {
     console.log("render...")
 
@@ -339,10 +339,6 @@ class ProcessDefinedList extends React.Component {
           </div>
           <div style={{ marginTop: '8px' }}>
             <TextArea rows={4} onChange={(e) => { this.vmodel('processVariable', e.target.value) }} placeholder="Process Variable (JSON) " />
-
-
-
-
 
             <div dangerouslySetInnerHTML={{ __html: `Eg.<br/>{<br/>"users":["zhangsan","lisi","wangwu"],<br/>"judge":"”zhaoliu"<br/>}` }}></div>
           </div>

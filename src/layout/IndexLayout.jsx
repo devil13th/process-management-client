@@ -12,6 +12,7 @@ import ProcessDefinedList from '@/components/processdefined/ProcessDefinedList'
 import ProcessInstanceList from '@/components/processinstance/ProcessInstanceList'
 import TaskList from '@/components/processinstance/TaskList'
 import TaskHisList from '@/components/processinstance/TaskHisList'
+import ProcessVariable from '@/components/processvariable/ProcessVariable'
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -32,7 +33,8 @@ class IndexLayout extends React.Component {
         
         <Sider collapsible collapsed={collapsed} onCollapse={this.onCollapse}>
           <div className="logo" >
-            Process Management
+            {/* Process Management */}
+            ____
           </div>
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
             <SubMenu key="sub1" icon={<UserOutlined />} title="Process Defined">
@@ -43,12 +45,11 @@ class IndexLayout extends React.Component {
               <Menu.Item key="processInstanceList"><Link to="/processInstanceList">Instance Mgmt.</Link></Menu.Item>
               <Menu.Item key="taskList"><Link to="/taskList">Task List</Link></Menu.Item>
               <Menu.Item key="TaskHisList"><Link to="/TaskHisList">Task His List</Link></Menu.Item>
-              <Menu.Item key="9">Process Var</Menu.Item>
             </SubMenu>
 
     
-            <Menu.Item key="xx" icon={<FileOutlined />}>
-              Files
+            <Menu.Item key="ProcessVariable" icon={<FileOutlined />}>
+              <Link to="/ProcessVariable">Process Var</Link>
             </Menu.Item>
           </Menu>
         </Sider>
@@ -62,11 +63,12 @@ class IndexLayout extends React.Component {
               <Route path='/processInstanceList' exact component={ProcessInstanceList}></Route>
               <Route path='/taskList' exact component={TaskList}></Route>
               <Route path='/TaskHisList' exact component={TaskHisList}></Route>
+              <Route path='/ProcessVariable' exact component={ProcessVariable}></Route>
               
             </div>
 
           </Content>
-          <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+          <Footer style={{ textAlign: 'center' }}>Activiti Process Management System</Footer>
         </Layout>
       </Layout>
     );

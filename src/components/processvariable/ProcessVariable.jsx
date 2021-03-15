@@ -22,11 +22,16 @@ class ProcessVariable extends React.Component {
   };
 
   componentDidMount() {
-    this.setState({
-      tid: this.props.id,
-      idType: this.props.processVarType,
-    },this.search);
 
+    if (this.props.id) {
+      this.setState(
+        {
+          tid: this.props.id,
+          idType: this.props.processVarType,
+        },
+        this.search
+      );
+    }
    
   }
 
