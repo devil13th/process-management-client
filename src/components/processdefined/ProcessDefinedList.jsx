@@ -33,7 +33,7 @@ class ProcessDefinedList extends React.Component {
     },
     // 排序
     sorter: {
-      field: 'id_',
+      field: 'def.id_',
       order: 'descend',
     },
   }
@@ -222,6 +222,10 @@ class ProcessDefinedList extends React.Component {
         dataIndex: "deploymentId",
       },
       {
+        title: "Deployment Time",
+        dataIndex: "deployTime",
+      },
+      {
         title: "Operate",
         key: "operate",
         render: (text, record) => (
@@ -277,7 +281,7 @@ class ProcessDefinedList extends React.Component {
     const props = {
       name: 'file',
       multiple: true,
-      action: '/api/deploy',
+      action: process.env.REACT_APP_CONTEXT+'/deploy',
       onChange : (info) => {
         const { status } = info.file;
         if (status !== 'uploading') {

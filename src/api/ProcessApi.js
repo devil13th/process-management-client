@@ -1,6 +1,6 @@
 import axios from '@/axios';
 
-const context = "/api"
+const context = process.env.REACT_APP_CONTEXT
 export default {
   startProcessByDefId:function(data){
     return axios({
@@ -137,6 +137,18 @@ export default {
     return axios({
       method: 'get',
       url: `${context}/setAssigneeOfTask?taskId=${taskId}&userId=${userId}`
+    })
+  },
+  queryProcDefByDefId:function(type,id){
+    return axios({
+      method: 'get',
+      url: `${context}/queryProcDefByDefId/${type}/${id}`
+    })
+  },
+  queryAllProcDefKeyList:function(){
+    return axios({
+      method: 'get',
+      url: `${context}/queryAllProcDefKeyList`
     })
   }
  

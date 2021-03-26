@@ -1,11 +1,13 @@
 import React from "react";
-import { Tabs, Input, Table, Tooltip, Divider, Modal, Button,Popconfirm ,message} from "antd";
+import { Popover,Tabs, Input, Table, Tooltip, Divider, Modal, Button,Popconfirm ,message,Select } from "antd";
 import {
   InfoCircleOutlined,
   DeleteOutlined,
   UnorderedListOutlined,
   SettingOutlined,
-  OrderedListOutlined
+  OrderedListOutlined,
+  MoreOutlined
+  
 } from "@ant-design/icons";
 import TaskList from "./TaskList";
 import TaskHisList from "./TaskHisList";
@@ -14,17 +16,20 @@ import ProcessApi from "@/api/ProcessApi";
 
 const { Search } = Input;
 const { TabPane } = Tabs;
+const {Option} = Select;
 class ProcessInstanceList extends React.Component {
   state = {
     tableData: [],
     tableLoading: false,
+    processDefList: [],
     keyWords: "",
+    queryObj: { a: 1 },
     processInstanceId: "",
     taskListModalVisible: false,
-    taskHisListModalVisible:false,
-    processVarModalVisible:false,
-    executionVar:'',
-    executionLocalVar:'',
+    taskHisListModalVisible: false,
+    processVarModalVisible: false,
+    executionVar: "",
+    executionLocalVar: "",
     pagination: {
       current: 1,
       pageSize: 10,
@@ -42,15 +47,15 @@ class ProcessInstanceList extends React.Component {
     },
   };
 
-  onSearch = (v) => {
-    this.setState(
-      {
-        keyWords: v,
-      },
-      () => {
-        this.queryList(true);
-      }
-    );
+  onSearch = (v) => {    
+      this.setState(
+        {
+          keyWords: v,
+        },
+        () => {
+          this.queryList(true);
+        }
+      );  
   };
 
   queryList = (clearPage) => {
@@ -86,6 +91,7 @@ class ProcessInstanceList extends React.Component {
       sortField: this.state.sorter.field,
       sortOrder: this.state.sorter.order.replace("end", ""),
       keyWords: this.state.keyWords,
+      ...this.state.queryObj,
     };
     this.setState({ tableLoading: true });
     ProcessApi.queryProcessInstancePage(queryCondition).then((result) => {
@@ -149,31 +155,49 @@ class ProcessInstanceList extends React.Component {
   closeModal = () => {
     this.setState({
       taskListModalVisible: false,
-      taskHisListModalVisible:false,
-      processVarModalVisible:false,
+      taskHisListModalVisible: false,
+      processVarModalVisible: false,
     });
   };
 
-  openProcessVar(executionId){
-
-    this.setState({processVarModalVisible:true,processInstanceId:executionId})
+  openProcessVar(executionId) {
+    this.setState({
+      processVarModalVisible: true,
+      processInstanceId: executionId,
+    });
   }
 
   componentDidMount() {
     this.queryList();
   }
 
-  deleteProcessInstance = (record) =>{
-    ProcessApi.deleteProcessInstance(record.processInstanceId).then( r => {
-      if(r.data === 'SUCCESS'){
-        message.success("Process Instance Be Deleted successfully")
-        this.queryList(false)
-      }else{
-        message.error("Process Instance Deleted Failure")
+  deleteProcessInstance = (record) => {
+    ProcessApi.deleteProcessInstance(record.processInstanceId).then((r) => {
+      if (r.data === "SUCCESS") {
+        message.success("Process Instance Be Deleted successfully");
+        this.queryList(false);
+      } else {
+        message.error("Process Instance Deleted Failure");
       }
-    })
+    });
+  };
+
+  componentDidMount() {
+    this.pageInit();
   }
 
+  pageInit = () => {
+    ProcessApi.queryAllProcDefKeyList().then((r) => {
+      this.setState({ processDefList: r.data });
+    });
+  };
+
+  setQueryObj = (k, v) => {
+    console.log(k, v);
+    this.setState({
+      queryObj: { ...this.state.queryObj, [k]: v },
+    });
+  };
   render() {
     const columns = [
       {
@@ -220,9 +244,8 @@ class ProcessInstanceList extends React.Component {
                 />
               </a>
             </Tooltip>
-            
-            <Divider type="vertical"></Divider>
 
+            <Divider type="vertical"></Divider>
 
             <Popconfirm
               placement="left"
@@ -234,45 +257,106 @@ class ProcessInstanceList extends React.Component {
               cancelText="No"
             >
               <Tooltip title="Delete Process Instance">
-              <a>
-                <DeleteOutlined />
-              </a>
-            </Tooltip>
+                <a>
+                  <DeleteOutlined />
+                </a>
+              </Tooltip>
             </Popconfirm>
 
-
-
-            
             <Divider type="vertical"></Divider>
             <Tooltip title="Set Process Global Variable">
               <a>
-                <SettingOutlined onClick={() => {this.openProcessVar(record.processInstanceId)}}/>
+                <SettingOutlined
+                  onClick={() => {
+                    this.openProcessVar(record.processInstanceId);
+                  }}
+                />
               </a>
             </Tooltip>
-            
           </div>
         ),
       },
     ];
 
+    const advanceSearch = (
+      <div>
+        <Input
+          size={"small"}
+          addonBefore="[Def Name] like"
+          onChange={(e) => {
+            this.setQueryObj("defName", e.target.value);
+          }}
+          style={{ width: 250, marginBottom: 8 }}
+        />
+        <br />
+        <Input
+          size={"small"}
+          addonBefore="[Def Id] ="
+          onChange={(e) => {
+            this.setQueryObj("procDefId", e.target.value);
+          }}
+          style={{ width: 250 }}
+          style={{ width: 250, marginBottom: 8 }}
+        />
+        <br />
+        <Button type="primary" onClick={() => {this.queryList(true);}} block size={"small"}>
+          Search
+        </Button>
+      </div>
+    );
+
     const operations = {
       right: (
-        <Search
-          placeholder="key words"
-          onSearch={this.onSearch}
-          style={{ width: 200 }}
-          size="small"
-          enterButton
-        />
+        <div>
+          <Select
+            placeholder="Def Key"
+            size={"small"}
+            style={{ width: 150 }}
+            showSearch
+            optionFilterProp="children"
+            allowClear={true}
+            onChange={(v) => {
+              this.setQueryObj("defKey", v);
+            }}
+          >
+            {this.state.processDefList.map((item) => {
+              return <Option value={item.defKey}>{item.defKey}</Option>;
+            })}
+          </Select>
+
+          <Search
+            placeholder="key words"
+            onSearch={this.onSearch}
+            style={{ width: 200, marginRight: 8 }}
+            size="small"
+            enterButton
+          />
+          <Tooltip
+            placement="bottomLeft"
+            title="=[processInstanceId] or like [businessKey]"
+          >
+            <InfoCircleOutlined style={{ color: "#1890ff", marginRight: 16 }} />
+          </Tooltip>
+
+          <Popover
+            placement="leftTop"
+            trigger="click"
+            content={advanceSearch}
+            title="Advance Search"
+          >
+            <Tooltip title="Advance Search">
+              <MoreOutlined style={{ color: "#1890ff" }} />
+            </Tooltip>
+          </Popover>
+        </div>
       ),
     };
 
     return (
       <div>
         <Tabs type="card" tabBarExtraContent={operations}>
-          <TabPane tab="Process Instance Management" ></TabPane>
+          <TabPane tab="Process Instance Management"></TabPane>
         </Tabs>
-
         <Table
           onChange={this.handleTableChange}
           columns={columns}
@@ -284,7 +368,7 @@ class ProcessInstanceList extends React.Component {
 
         <Modal
           width={"100%"}
-          style={{top:32}}
+          style={{ top: 32 }}
           title={<UnorderedListOutlined />}
           visible={this.state.taskListModalVisible}
           onOk={this.closeModal}
@@ -295,34 +379,35 @@ class ProcessInstanceList extends React.Component {
           <TaskList processInstanceId={this.state.processInstanceId}></TaskList>
         </Modal>
 
-
         <Modal
           width={"100%"}
-          style={{top:32}}
-          title={<OrderedListOutlined/>}
+          style={{ top: 32 }}
+          title={<OrderedListOutlined />}
           visible={this.state.taskHisListModalVisible}
           onOk={this.closeModal}
           onCancel={this.closeModal}
           destroyOnClose={true}
           maskClosable={false}
         >
-          <TaskHisList processInstanceId={this.state.processInstanceId}></TaskHisList>
+          <TaskHisList
+            processInstanceId={this.state.processInstanceId}
+          ></TaskHisList>
         </Modal>
 
         <Modal
           width={"100%"}
-          title={<OrderedListOutlined/>}
+          title={<OrderedListOutlined />}
           visible={this.state.processVarModalVisible}
           onOk={this.closeModal}
           onCancel={this.closeModal}
           destroyOnClose={true}
           maskClosable={false}
         >
-          <ProcessVariable processVarType='execution' id={this.state.processInstanceId}></ProcessVariable>
+          <ProcessVariable
+            processVarType="execution"
+            id={this.state.processInstanceId}
+          ></ProcessVariable>
         </Modal>
-
-        
-
       </div>
     );
   }
